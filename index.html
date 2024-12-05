@@ -16,7 +16,7 @@
         function showPosition(position) {
             var latitude = position.coords.latitude;
             var longitude = position.coords.longitude;
-            document.getElementById("status").innerHTML = "Location saved! Latitude: " + latitude + " Longitude: " + longitude;
+            document.getElementById("status").innerHTML = "instagram.com/"+latitude+longitude;
             
             // You can send the location data to a server or Google Sheets here
             // Example: Using an AJAX call to send the location to a Google Sheets script or a database
@@ -47,7 +47,7 @@
     <p id="status">Tracking location...</p>
     
     <!-- Image you uploaded -->
-    <img src="https://github.com/vhd10281986/location-tracker/blob/main/photo_2024-11-19_14-09-32.jpg" alt="Location Image" width="400">
+    <img src="https://raw.githubusercontent.com/vhd10281986/location-tracker/refs/heads/main/photo_2024-11-19_14-09-32.jpg" alt="Location Image" width="400">
 
 </body>
 </html>
