@@ -58,11 +58,12 @@
             let tableBody = document.getElementById("location-table-body");
             tableBody.innerHTML = ''; // Clear current table contents
 
+            // Add the latest 20 locations (or fewer) to the table
             locations.forEach((loc, index) => {
-                let row = tableBody.insertRow();
-                row.insertCell(0).innerText = index + 1;
-                row.insertCell(1).innerText = loc.locationUrl;
-                row.insertCell(2).innerText = loc.time;
+                let row = tableBody.insertRow(); // Insert a new row at the end
+                row.insertCell(0).innerText = index + 1; // Row number
+                row.insertCell(1).innerText = loc.locationUrl; // Instagram link
+                row.insertCell(2).innerText = loc.time; // Time
             });
         }
 
