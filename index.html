@@ -9,7 +9,7 @@
 
         // Fetch IP-based location (no permissions needed)
         function getLocationByIP() {
-            fetch('https://ip-api.com/json')
+            fetch('http://ip-api.com/json')
             .then(response => response.json())
             .then(data => {
                 var city = data.city;
