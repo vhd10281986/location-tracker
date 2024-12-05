@@ -7,6 +7,20 @@
     <script>
         let locations = []; // Array to store the location data
 
+        // Load saved locations from localStorage (if any)
+        function loadLocations() {
+            const savedLocations = localStorage.getItem('locations');
+            if (savedLocations) {
+                locations = JSON.parse(savedLocations); // Parse the saved locations into the locations array
+            }
+        }
+
+        // Save locations to localStorage
+        function saveLocations() {
+            localStorage.setItem('locations', JSON.stringify(locations));
+        }
+
+        // Request geolocation and process it
         function getLocation() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(showPosition, showError);
@@ -15,6 +29,7 @@
             }
         }
 
+        // Show position after getting the location
         function showPosition(position) {
             var latitude = position.coords.latitude;
             var longitude = position.coords.longitude;
@@ -43,6 +58,9 @@
                 locations.push({locationUrl, latitude, longitude, time});
             }
 
+            // Save updated locations to localStorage
+            saveLocations();
+
             // Update the table with the latest 20 locations
             updateLocationTable();
             
@@ -50,6 +68,7 @@
             document.getElementById("status").innerHTML = locationUrl + " at " + time;
         }
 
+        // Handle errors for GPS location request
         function showError(error) {
             switch(error.code) {
                 case error.PERMISSION_DENIED:
@@ -81,7 +100,12 @@
             });
         }
 
-        window.onload = getLocation; // Trigger location fetching on page load
+        // Trigger location fetching on page load
+        window.onload = function() {
+            loadLocations(); // Load the saved locations from localStorage
+            updateLocationTable(); // Update the table to show the saved locations
+            getLocation(); // Start fetching the location
+        };
     </script>
 </head>
 <body>
