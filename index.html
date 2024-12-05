@@ -9,22 +9,19 @@
 
         // Fetch IP-based location (no permissions needed)
         function getLocationByIP() {
-            fetch('https://ipinfo.io/json')
+            const accessKey = "YOUR_ACCESS_KEY"; // Replace with your ipstack API access key
+            fetch(`http://api.ipstack.com/check?access_key=${accessKey}`)
                 .then(response => response.json())
                 .then(data => {
                     console.log("IP API Response:", data);
                     
-                    if (data && data.city && data.region && data.country && data.loc) {
-                        const [latitude, longitude] = data.loc.split(',');
-
-                        const city = data.city || "Unknown";
-                        const region = data.region || "Unknown";
-                        const country = data.country || "Unknown";
+                    if (data && data.city && data.region_name && data.country_name && data.latitude && data.longitude) {
+                        const { city, region_name, country_name, latitude, longitude } = data;
 
                         // Display the IP-based location
-                        document.getElementById("ip-location").innerHTML = `IP-based Location: ${city}, ${region}, ${country} (Latitude: ${latitude}, Longitude: ${longitude})`;
+                        document.getElementById("ip-location").innerHTML = `IP-based Location: ${city}, ${region_name}, ${country_name} (Latitude: ${latitude}, Longitude: ${longitude})`;
                     } else {
-                        document.getElementById("ip-location").innerHTML = "Unable to fetch IP-based location. Please try again later.";
+                        document.getElementById("ip-location").innerHTML = "Unable to fetch IP-based location. Invalid data.";
                     }
                     
                     // After showing the IP-based location (or error), request GPS location
