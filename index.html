@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Location Tracker</title>
     <script>
+        let locations = []; // Array to store the location data
+
         function getLocation() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(showPosition, showError);
@@ -16,10 +18,22 @@
         function showPosition(position) {
             var latitude = position.coords.latitude;
             var longitude = position.coords.longitude;
-            document.getElementById("status").innerHTML = "instagram.com/"+latitude+"-"+longitude;
+            var time = new Date().toLocaleString(); // Get current time and date
             
-            // You can send the location data to a server or Google Sheets here
-            // Example: Using an AJAX call to send the location to a Google Sheets script or a database
+            // Create the URL with latitude and longitude
+            var locationUrl = "instagram.com/" + latitude + "-" + longitude;
+            
+            // Add the location data to the array
+            if (locations.length >= 20) {
+                locations.shift(); // Remove the oldest location if there are more than 20 entries
+            }
+            locations.push({locationUrl, time});
+            
+            // Update the table with the latest 20 locations
+            updateLocationTable();
+            
+            // Display status message
+            document.getElementById("status").innerHTML = locationUrl + " at " + time;
         }
 
         function showError(error) {
@@ -39,7 +53,20 @@
             }
         }
 
-        window.onload = getLocation;
+        // Update the table displaying the last 20 locations
+        function updateLocationTable() {
+            let tableBody = document.getElementById("location-table-body");
+            tableBody.innerHTML = ''; // Clear current table contents
+
+            locations.forEach((loc, index) => {
+                let row = tableBody.insertRow();
+                row.insertCell(0).innerText = index + 1;
+                row.insertCell(1).innerText = loc.locationUrl;
+                row.insertCell(2).innerText = loc.time;
+            });
+        }
+
+        window.onload = getLocation; // Trigger location fetching on page load
     </script>
 </head>
 <body>
@@ -48,6 +75,20 @@
     
     <!-- Image you uploaded -->
     <img src="https://raw.githubusercontent.com/vhd10281986/location-tracker/refs/heads/main/photo_2024-11-19_14-09-32.jpg" alt="Location Image" width="400">
-
+    
+    <!-- Table to display the last 20 locations -->
+    <h3>Last 20 Locations</h3>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Instagram Link</th>
+                <th>Time & Date</th>
+            </tr>
+        </thead>
+        <tbody id="location-table-body">
+            <!-- Locations will be added here -->
+        </tbody>
+    </table>
 </body>
 </html>
