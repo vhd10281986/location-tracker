@@ -9,8 +9,8 @@
 
         // Fetch IP-based location (no permissions needed)
         function getLocationByIP() {
-            const accessKey = "ee667e0ec5fd4c8d9e2e5d68d5f65303
-"; // Replace with your ipstack API access key
+            const accessKey = ee667e0ec5fd4c8d9e2e5d68d5f65303
+; // Replace with your ipstack API access key
             fetch(`https://api.ipstack.com/check?access_key=${accessKey}`)
                 .then(response => response.json())
                 .then(data => {
