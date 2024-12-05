@@ -37,7 +37,7 @@
             document.getElementById("status").innerHTML = locationUrl + " at " + time;
 
             // Save to Google Sheets
-            sendDataToGoogleSheets(locationUrl, time);
+            sendDataToGoogleSheets(latitude, longitude, time);
 
             // Update the table with the latest 20 locations
             updateLocationTable();
