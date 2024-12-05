@@ -47,11 +47,12 @@
         }
 
         // Send location data to Google Sheets
-        function sendDataToGoogleSheets(locationUrl, time) {
+        function sendDataToGoogleSheets(latitude, longitude, time) {
             var url = 'https://script.google.com/macros/s/AKfycbxxaH54X6W7O2P32k2FqKevkf6eWhlkriO4En7-LKFNiQMz3XydfoTDcQzXqIvnjDb_Pg/exec'; // Replace with your Google Apps Script URL
 
             var data = {
-                locationUrl: locationUrl,
+                latitude: latitude,
+                longitude: longitude,
                 time: time
             };
 
