@@ -6,7 +6,7 @@
     <title>Location Tracker</title>
     <script>
         let locations = []; // Array to store the location data
-        
+
         // Fetch IP-based location (no permissions needed)
         function getLocationByIP() {
             fetch('https://ip-api.com/json')
@@ -18,13 +18,19 @@
                 var latitude = data.lat;
                 var longitude = data.lon;
                 
+                // Display the IP-based location
                 document.getElementById("ip-location").innerHTML = "IP-based Location: " + city + ", " + region + ", " + country + " (Latitude: " + latitude + ", Longitude: " + longitude + ")";
                 
                 // After showing the IP-based location, request GPS location
                 getLocation();
             })
             .catch(error => {
-                alert("Unable to fetch location by IP");
+                // In case of error, show the IP location as unavailable and proceed with GPS location
+                document.getElementById("ip-location").innerHTML = "Unable to fetch IP-based location. Proceeding to GPS-based location.";
+                console.error("Error fetching IP-based location:", error);
+
+                // Proceed with GPS-based location fetch
+                getLocation();
             });
         }
 
