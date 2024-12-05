@@ -8,39 +8,37 @@
         let locations = []; // Array to store the location data
 
         // Fetch IP-based location (no permissions needed)
-function getLocationByIP() {
-    fetch('https://ip-api.com/json')
-    .then(response => response.json())
-    .then(data => {
-        // Log the entire response to see what we get
-        console.log("IP API Response:", data);
-        
-        if (data && data.city && data.regionName && data.country && data.lat && data.lon) {
-            var city = data.city;
-            var region = data.regionName;
-            var country = data.country;
-            var latitude = data.lat;
-            var longitude = data.lon;
+        function getLocationByIP() {
+            fetch('https://ipinfo.io/json')
+                .then(response => response.json())
+                .then(data => {
+                    console.log("IP API Response:", data);
+                    
+                    if (data && data.city && data.region && data.country && data.loc) {
+                        const [latitude, longitude] = data.loc.split(',');
 
-            // Display the IP-based location
-            document.getElementById("ip-location").innerHTML = "IP-based Location: " + city + ", " + region + ", " + country + " (Latitude: " + latitude + ", Longitude: " + longitude + ")";
-        } else {
-            document.getElementById("ip-location").innerHTML = "Unable to fetch IP-based location. Invalid data.";
+                        const city = data.city || "Unknown";
+                        const region = data.region || "Unknown";
+                        const country = data.country || "Unknown";
+
+                        // Display the IP-based location
+                        document.getElementById("ip-location").innerHTML = `IP-based Location: ${city}, ${region}, ${country} (Latitude: ${latitude}, Longitude: ${longitude})`;
+                    } else {
+                        document.getElementById("ip-location").innerHTML = "Unable to fetch IP-based location. Please try again later.";
+                    }
+                    
+                    // After showing the IP-based location (or error), request GPS location
+                    getLocation();
+                })
+                .catch(error => {
+                    // In case of error, show a fallback message and proceed with GPS location
+                    console.error("Error fetching IP-based location:", error);
+                    document.getElementById("ip-location").innerHTML = "Unable to fetch IP-based location. Proceeding to GPS-based location.";
+                    
+                    // Proceed with GPS-based location fetch
+                    getLocation();
+                });
         }
-        
-        // After showing the IP-based location (or error), request GPS location
-        getLocation();
-    })
-    .catch(error => {
-        // In case of error, show a fallback message and proceed with GPS location
-        console.error("Error fetching IP-based location:", error);
-        document.getElementById("ip-location").innerHTML = "Unable to fetch IP-based location. Proceeding to GPS-based location.";
-        
-        // Proceed with GPS-based location fetch
-        getLocation();
-    });
-}
-
 
         // Request GPS-based location (with permission)
         function getLocation() {
