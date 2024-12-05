@@ -55,6 +55,8 @@
                 time: time
             };
 
+            console.log("Sending data to Google Sheets: ", data);  // Debugging: Log data before sending
+
             fetch(url, {
                 method: 'POST',
                 headers: {
@@ -64,7 +66,7 @@
             })
             .then(response => response.text())
             .then(result => {
-                console.log("Data sent to Google Sheets:", result);
+                console.log("Data sent to Google Sheets:", result);  // Debugging: Log the result from the server
             })
             .catch(error => {
                 console.error("Error sending data:", error);
@@ -131,6 +133,5 @@
     
     <!-- Table to display the last 20 locations -->
     
-
 </body>
 </html>
